@@ -3,36 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Base class for all weapons
+/// Base script for all weapon controllers
 /// </summary>
-
-public class WeaponsControler : MonoBehaviour
+public class WeaponController : MonoBehaviour
 {
     [Header("Weapon Stats")]
-    public GameObject prefab;
-    public float damage;
-    public float speed;
-    public float cooldownDuration;
+    public WeaponScriptableObject weaponData;
     float currentCooldown;
-    public int pierce;
+
     protected PlayerMovement pm;
+
+
     protected virtual void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
-        currentCooldown = cooldownDuration;
+        currentCooldown = weaponData.CooldownDuration; //At the start set the current cooldown to be cooldown duration
     }
 
-    // Update is called once per frame
     protected virtual void Update()
     {
         currentCooldown -= Time.deltaTime;
-        if (currentCooldown <= 0f) {
+        if (currentCooldown <= 0f)   //Once the cooldown becomes 0, attack
+        {
             Attack();
         }
     }
 
     protected virtual void Attack()
     {
-        currentCooldown = cooldownDuration;
+        currentCooldown = weaponData.CooldownDuration;
     }
 }
