@@ -60,7 +60,8 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
-
+medevialsurvivors/Library/ # Ignore the Library folder
+medevialsurvivors/User Settings/ # Ignore the User Settings folder
 # Crashlytics generated file
 crashlytics-build.properties
 
