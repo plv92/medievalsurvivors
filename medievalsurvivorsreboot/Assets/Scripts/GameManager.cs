@@ -33,7 +33,17 @@ public class GameManager : MonoBehaviour
     [Header("Results Display")]
     public Image chosenCharacterImage;
     public Text chosenCharacterName;
+    public Text TimeSurvivedDisplay;
     public Text levelReachedDisplay;
+    public List<Image> chosenWeaponsUI = new List<Image>(6);
+    public List<Image> chosenPassiveItemsUI = new List<Image>(6);
+
+    [Header("Stopwatch")]
+    public float timeLimit;
+    float stopwatchTime;
+    public Text stopwatchDisplay;
+
+
     public bool isGameOver = false;
 
     void Awake()
@@ -55,6 +65,7 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Gameplay:
                 CheckForPauseandResume();
+                UpdateStopwatch();
                 break;
             case GameState.Paused:
                 CheckForPauseandResume();
@@ -122,6 +133,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        TimeSurvivedDisplay.text = stopwatchDisplay.text;
         ChangeState(GameState.GameOver);
     }
 
@@ -139,5 +151,57 @@ public class GameManager : MonoBehaviour
     public void AssignLevelReachedUI(int levelReachedData)
     {
         levelReachedDisplay.text = levelReachedData.ToString();
+    }
+
+    public void AssignChosenWeaponsAndPassiveItemsUI(List<Image> chosenWeaponsData, List<Image> chosenPassiveItemsData)
+    {
+        if (chosenWeaponsData.Count != chosenWeaponsUI.Count || chosenPassiveItemsUI.Count != chosenPassiveItemsData.Count)
+        {
+            return;
+        }
+        for (int i = 0; i < chosenWeaponsUI.Count; i++)
+        {
+            if (chosenWeaponsUI[i].sprite)
+            {
+                chosenWeaponsUI[i].enabled = true;
+                chosenWeaponsUI[i].sprite = chosenWeaponsData[i].sprite;
+            }
+            else
+            {
+                chosenWeaponsUI[i].enabled = false;
+            }
+        }
+
+        for (int i = 0; i < chosenPassiveItemsUI.Count; i++)
+        {
+            if (chosenPassiveItemsUI[i].sprite)
+            {
+                chosenPassiveItemsUI[i].enabled = true;
+                chosenPassiveItemsUI[i].sprite = chosenPassiveItemsData[i].sprite;
+            }
+            else
+            {
+                chosenPassiveItemsUI[i].enabled = false;
+            }
+        }
+    }
+
+    void UpdateStopwatch()
+    {
+        stopwatchTime += Time.deltaTime;
+
+        UpdateStopwatchDisplay();
+        if (stopwatchTime >= timeLimit)
+        {
+            GameOver();
+        }
+    }
+
+    void UpdateStopwatchDisplay()
+    {
+        int minutes = Mathf.FloorToInt(stopwatchTime / 60);
+        int seconds = Mathf.FloorToInt(stopwatchTime % 60);
+
+        stopwatchDisplay.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
